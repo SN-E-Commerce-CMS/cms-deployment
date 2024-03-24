@@ -9,6 +9,8 @@ services:
     ports:
       - 9090:9090
       - 9091:9091
+    networks:
+      - registration
   postgres:
     image: postgres
     volumes:
@@ -17,6 +19,8 @@ services:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: keycloak
+    networks:
+      - registration
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.7
     container_name: "keycloak"
@@ -34,8 +38,14 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+    networks:
+      - registration
 
 volumes:
   postgres_data:
+
+networks:
+  registration:
+
 
 
