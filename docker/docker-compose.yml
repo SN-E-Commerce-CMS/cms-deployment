@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  registration-service:
+    depends_on:
+      - keycloak
+      - postgres
+    image: ghcr.io/sn-e-commerce-cms/registration-service
+    container_name: registration-service
+    ports:
+      - 9090:9090
+      - 9091:9091
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: "keycloak"
+    command: start-dev
+    volumes:
+      - ../keycloakify-starter/dist_keycloak/target/keycloakify-starter-keycloak-theme-6.1.5.jar:/opt/keycloak/providers/keycloakify-starter-keycloak-theme-6.1.5.jar
+    environment:
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=keycloak
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+
+
